@@ -9,34 +9,39 @@ tags: ['plugin system', 'DSL', 'automation']
 {{< youtube 8FOwCdPLD0c >}}
 
 ## Features
-### Write plugins in yaml
-Specify automation process in yaml, such as mouse, keyboard, web, visual (e.g., image recognition), and many other types of actions. 
+
+### Write plugins in YAML
+Every AuTool plugin is a YAML file that defines various actions, such as mouse clicks, keyboard inputs, web interactions, and more.
 
 ```yaml
 actions:
-    # click a location in target window
-    - window.is(System Settings):
+    - window.in(System Settings):
+        # Mouse click relative to the window
         - mouse.click({{ [0,200] }})
 ```
 
-### Simple GUI for plugins using JSON
-You can write a simple plugin with GUI for your favorite command line tools or REST APIs, in just a few lines of code.
+### Interact with popup windows
+If your plugin needs to obtain user inputs to determine what actions to perform, you can display a popup window that requests input from the user using `user.input` API. 
 
 ```yaml
 actions:
-    # This will trigger a popup window to ask for inputs
+    # Make a handy GUI for command-line tools or REST APIs, making them more user-friendly.
     - >-
       user.input({{ {
-        'title': 'Input your name'
+        'title': 'Example',
         'content': {
           'type': 'text',
-          'label': 'Enter your name'
-        },
+          'label': 'Enter user name',
+          'key': 'username'
+        }
       } }}) => $resp
+    
+    # Use the user input to run CLI commands
+    - os.shell( echo {{ $resp['username'] }})
 ```
 
-### Screen annotations
-Inside plugins, you can use screen annotations to highlight a region, or draw a shape on the screen, to guide users to use the software.
+### Guide people to use softwares
+You can use `window.annotate` API to draw floating bounding boxes or shapes on software windows. These annotations provide detailed notes when the cursor is hovered over them, making it easier to guide users on how to use the software.
 
 ```yaml
 actions:
@@ -52,7 +57,7 @@ actions:
 ```
 
 ### Connect apps into a pipeline
-You can connect multiple apps into a pipeline, and control the flow of the pipeline using a simple GUI.
+You can connect multiple apps into a pipeline. It supports both desktop apps and web apps. 
 
 ```yaml
 actions:
@@ -63,12 +68,40 @@ actions:
 
 ```
 
-## GUI components
 
+## Example Plugins
+### AI assistants
+- GPT chatbot
+- Self-hosted chatbot built on LLaMA and Vicuna
+- GPT-based summarizer for local articles
+- Image generation with stable diffusion
+- Image super-resolution
+- Image segmentation
+- Image background removal
+- Audio-to-Caption realtime converter
+
+### Easy cloud service
+- Retailer price monitoring and auto-checkout
+- RSS or website status monitoring service
+- Conditionally distribute your message to other users
+- Tracing service (e.g., tracing QR code scans, or email opens)
+
+### Software collaboration
+- Send a poll to your team members and trigger a task based on the response
+- Notify your team on Slack when your social media account is mentioned
+- Post a task in Trello when a new email with specific keywords is received
+- Save a screenshot to Google Drive
+
+### Other desktop applets
+- Video and image format converter
+- App and file launcher
+- Shortcut to fav web pages (e.g., Memos)
+- QR code generator
+
+## GUI components
 ### Elements
 
 - Text input or display-only text label
-
 ```yaml
     { 
       'type': 'text',
@@ -148,3 +181,9 @@ actions:
 
 demo: talk and control a GPT-powered robot.
 {{< youtube PgT8tPChbqc >}}
+
+- Integrate with IoT devices. There is a lot of potential interesting applications, such as geo-location based games (e.g., when you enter a specific area, you will be prompted with some notifications by someone), controlling smart home devices, etc.
+
+e.g., a portable, modular, and extensible computer
+
+{{< youtube b3F9OtH2Xx4 >}}
